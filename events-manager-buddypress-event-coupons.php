@@ -30,14 +30,13 @@ add_action( 'bp_events_includes', 'bp_em_coupons_includes');
 
 /**
  * Hook into EM Buddy Press Component creation and add extra sub menu item for coupons
+ * Note custom capability manage_coupons. This currently needs to be added manually
+ * User Role Editor plugin makes this super simple
  */
 function bp_em_coupons_sub_nav() {
-  global $bp;
 
-  $wp_user = new WP_USER( $bp->loggedin_user->id );
-
-  // Prevent Bronze members from getting coupons
-  if( !in_array('bronze', $wp_user->roles) ) {
+  // Special capability
+  if( current_user_can( 'manage_coupons' ) ) {
 
     $em_link = trailingslashit( bp_displayed_user_domain() . em_bp_get_slug() );
 
