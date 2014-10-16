@@ -32,20 +32,27 @@ add_action( 'bp_events_includes', 'bp_em_coupons_includes');
  * Hook into EM Buddy Press Component creation and add extra sub menu item for coupons
  */
 function bp_em_coupons_sub_nav() {
+  global $bp;
 
-  $em_link = trailingslashit( bp_displayed_user_domain() . em_bp_get_slug() );
+  $wp_user = new WP_USER( $bp->loggedin_user->id );
 
-  $sub_nav = array(
-    'name' => __( 'My Coupons', 'dbem' ),
-    'slug' => 'my-coupons',
-    'parent_slug' => em_bp_get_slug(),
-    'parent_url' => $em_link,
-    'screen_function' => 'bp_em_my_coupons',
-    'position' => 45,
-    'user_has_access' => bp_is_my_profile() // Only the logged in user can access this on his/her profile
-  );
+  // Prevent Bronze members from getting coupons
+  if( !in_array('bronze', $wp_user->roles) ) {
 
-  bp_core_new_subnav_item( $sub_nav );
+    $em_link = trailingslashit( bp_displayed_user_domain() . em_bp_get_slug() );
+
+    $sub_nav = array(
+      'name' => __( 'My Coupons', 'dbem' ),
+      'slug' => 'my-coupons',
+      'parent_slug' => em_bp_get_slug(),
+      'parent_url' => $em_link,
+      'screen_function' => 'bp_em_my_coupons',
+      'position' => 45,
+      'user_has_access' => bp_is_my_profile() // Only the logged in user can access this on his/her profile
+    );
+
+    bp_core_new_subnav_item( $sub_nav );
+  }
 }
 add_action( 'bp_events_setup_nav', 'bp_em_coupons_sub_nav' );
 
