@@ -49,6 +49,10 @@ class Zswim_EM_Coupons_Admin extends EM_Coupons_Admin {
 
 	static function select_page() {
 		global $wpdb, $EM_Pro, $EM_Notices;
+
+		// Add filter to modify EM_Coupon search (currently ignores owner arg when in multibooking mode!)
+		add_filter('em_coupons_build_sql_conditions', 'bp_em_coupons_build_sql_conditions', 10, 2);
+
 		$url = empty($url) ? $_SERVER['REQUEST_URI']:$url; //url to this page
 		$limit = ( !empty($_REQUEST['limit']) && is_numeric($_REQUEST[ 'limit']) ) ? $_REQUEST['limit'] : 20;//Default limit
 		$page = ( !empty($_REQUEST['pno']) ) ? $_REQUEST['pno']:1;

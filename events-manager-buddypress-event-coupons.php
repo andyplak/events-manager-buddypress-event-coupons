@@ -69,3 +69,15 @@ function bp_em_coupons_locate_template($located, $template_name, $load, $args) {
   return $located;
 }
 add_filter('em_locate_template', 'bp_em_coupons_locate_template', 10, 4);
+
+/**
+ * Hooks into coupons sql conditions and ensures owner is added, regardless of multi user settings
+ * Necessary as there is an odd clause in EM_Coupons that looks like a Multibooking hack, that prevents 
+ * owner rules being applied to a coupon->get lookup.
+ */
+function bp_em_coupons_build_sql_conditions( $conditions, $args ) {
+  if( isset( $args['owner'] ) ) {
+    $conditions['owner'] = "coupon_owner=".$args['owner'];
+  }
+  return $conditions;
+}
